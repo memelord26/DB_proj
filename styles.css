@@ -155,3 +155,17 @@ body{
 .submit-btn:hover{
     gap: 15px;
 }
+
+/* Disable default browser password eye icon */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear,
+input[type="password"]::-webkit-credentials-auto-fill-button,
+input[type="password"]::-webkit-password-toggle {
+    display: none !important;
+    appearance: none !important;
+}
+
+/* Optional: make space for your custom eye icon */
+input[type="password"] {
+    padding-right: 2.5rem; /* adjust if needed based on your layout */
+}
