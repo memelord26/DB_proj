@@ -133,6 +133,7 @@ body{
     display: flex;
     justify-content: right;
     gap: 5px;
+    cursor: pointer;
 }
 .forgot-pass a{
     color: #fff;
