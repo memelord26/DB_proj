@@ -1,13 +1,20 @@
 "use client";
 import Image from "next/image";
 import { NextResponse } from "next/server";
-import { debounce } from 'lodash'
-import { useState, useEffect, useMemo } from 'react'
+import { debounce } from 'lodash';
+import { useState, useEffect, useMemo } from 'react';
+import AuthForm from "./login/page.js";
 
 
 export default function Home() {
   const [posts, setPosts] = useState([])
   const [searchInput, setSearchInput] = useState('')
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const status = sessionStorage.getItem("loggedIn");
+    setLoggedIn(status === "true");
+  }, []);
 
   const handleSearch = async () => {
     try {
@@ -17,8 +24,11 @@ export default function Home() {
     } catch (error) {
       console.log(error)
     }
-  }
+  };
 
+  if (!loggedIn) {
+    return <AuthForm />;
+  }
 
   return (
     <div>
@@ -42,6 +52,9 @@ export default function Home() {
                 </li>
                 <li>
                   <a href="#" className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">About</a>
+                </li>
+                <li>
+                  <a href="#" className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Log Out</a>
                 </li>
               </ul>
             </div>
