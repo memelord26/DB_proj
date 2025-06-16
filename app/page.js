@@ -1,28 +1,23 @@
 "use client";
 import Image from "next/image";
 import { NextResponse } from "next/server";
-import { useEffect, useState } from "react";
-
+import { debounce } from 'lodash'
+import { useState, useEffect, useMemo } from 'react'
 
 
 export default function Home() {
-  const [posts,setPosts] = useState([])
-  useEffect(() => {
-    const fetchData = async () => {
-    try{
-        const data = await fetch('/api/posts')
-        const response = await data.json()
-        setPosts(response.posts)
-        console.log(response)
+  const [posts, setPosts] = useState([])
+  const [searchInput, setSearchInput] = useState('')
 
-      }catch (error){ 
-        console.log(error)
-        return NextResponse.json({error: error.message})
-      }
-    } 
-
-    fetchData()
-  },[])
+  const handleSearch = async () => {
+    try {
+      const res = await fetch(`/api/posts?search=${encodeURIComponent(searchInput)}`)
+      const json = await res.json()
+      setPosts(json.posts)
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
 
   return (
@@ -63,20 +58,56 @@ export default function Home() {
         </p>
       </div>
 
-      <div className="mt-30">
-        <form className="max-w-md mx-auto">   
-            <label htmlFor="default-search" className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
+          <div className="mt-30">
+          <form
+            className="max-w-md mx-auto"
+            onSubmit={(e) => {
+              e.preventDefault() //  prevent page reload
+              handleSearch()     //  your search function
+            }}
+          >
+            <label
+              htmlFor="default-search"
+              className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
+            >
+              Search
+            </label>
             <div className="relative">
-                <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                    <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
-                    </svg>
-                </div>
-                <input type="search" id="default-search" className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search Actors, Movies, etc." required />
-                <button type="submit" className="text-white absolute end-2.5 bottom-2.5 bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-800">Search</button>
+              <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                <svg
+                  className="w-4 h-4 text-gray-500 dark:text-gray-400"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                  />
+                </svg>
+              </div>
+              <input
+                type="text"
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                id="default-search"
+                className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                placeholder="Search Actors, Movies, etc."
+                required
+              />
+              <button
+                type="submit"
+                className="text-white absolute end-2.5 bottom-2.5 bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-800"
+              >
+                Search
+              </button>
             </div>
-        </form>
-      </div>
+          </form>
+        </div>
 
       <div className="mt-20">
         <h1 className="text-4xl font-bold text-center">
@@ -93,9 +124,9 @@ export default function Home() {
           <tbody>
             {posts.map((post, index) => (
               <tr key={index} className="text-center">
-                <td className="py-2 px-4 border-b border-gray-200">{post.Actor_Id}</td>
-                <td className="py-2 px-4 border-b border-gray-200">{post.Actor_Name}</td>
-                <td className="py-2 px-4 border-b border-gray-200">{post.Movie_Name}</td>
+                <td  className="py-2 px-4 border-b border-gray-200">{post.Actor_Id}</td>
+                <td  className="py-2 px-4 border-b border-gray-200">{post.Actor_Name}</td>
+                <td  className="py-2 px-4 border-b border-gray-200">{post.Movie_Name}</td>
               </tr>
             ))}
           </tbody>

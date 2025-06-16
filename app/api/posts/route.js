@@ -1,14 +1,26 @@
 import { createConnection } from "@/lib/db"
 import { NextResponse } from "next/server"
 
-export async function GET(){
-    try{
-        const db = await createConnection()
-        const sql = "SELECT * FROM movie_table"
-        const [posts] = await db.query(sql)
-        return NextResponse.json({posts:posts})
-    } catch(error){
-        console.log(error)
-        return NextResponse.json({error: error.message})
-    }
+export async function GET(request) {
+  try {
+    const db = await createConnection()
+
+    // Extract search query from URL
+    const { searchParams } = new URL(request.url)
+    const search = searchParams.get('search') || ''
+
+    // Use parameterized query to prevent SQL injection
+    const sql = search
+      ? "SELECT * FROM movie_table WHERE Actor_Id LIKE ?"
+      : "SELECT * FROM movie_table"
+
+    const values = search ? [`%${search}%`] : []
+
+    const [posts] = await db.query(sql, values)
+
+    return NextResponse.json({ posts })
+  } catch (error) {
+    console.error(error)
+    return NextResponse.json({ error: error.message }, { status: 500 })
+  }
 }
