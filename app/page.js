@@ -2,18 +2,40 @@
 import Image from "next/image";
 import { NextResponse } from "next/server";
 import { debounce } from 'lodash';
+import { useRouter } from "next/navigation";
 import { useState, useEffect, useMemo } from 'react';
-import AuthForm from "./login/page.js";
 
 
 export default function Home() {
   const [posts, setPosts] = useState([])
   const [searchInput, setSearchInput] = useState('')
   const [loggedIn, setLoggedIn] = useState(false);
+  const router = useRouter();
+
+  const fetchData = async () => {
+    try{
+      const res = await fetch(`/api/posts`);
+      const json = await res.json();
+      setPosts(json.posts);
+      if (Array.isArray(json.posts)) {
+        setPosts(json.posts);
+      } else {
+        console.error("Invalid data format:", json);
+        setPosts([]);
+      }
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+      setPosts([]);
+    }
+  }
 
   useEffect(() => {
-    const status = sessionStorage.getItem("loggedIn");
-    setLoggedIn(status === "true");
+    const isLoggedIn = sessionStorage.getItem('isLoggedIn');
+    if (!isLoggedIn) {
+      router.replace('/login');
+    } else {
+      fetchData();
+    }
   }, []);
 
   const handleSearch = async () => {
@@ -25,10 +47,6 @@ export default function Home() {
       console.log(error)
     }
   };
-
-  if (!loggedIn) {
-    return <AuthForm />;
-  }
 
   return (
     <div>
@@ -54,7 +72,14 @@ export default function Home() {
                   <a href="#" className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">About</a>
                 </li>
                 <li>
-                  <a href="#" className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Log Out</a>
+                  <button
+                    onClick={() => {
+                      sessionStorage.removeItem('isLoggedIn');
+                      router.push('/login');
+                    }}
+                    className="cursor-pointer block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">
+                      Log Out
+                    </button>
                 </li>
               </ul>
             </div>
