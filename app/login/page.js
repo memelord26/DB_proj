@@ -1,26 +1,26 @@
 "use client";
-import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import styles from './style.module.css';
-import MainPage from '../page.js';
 
 const AuthForm = () => {
+  const router = useRouter();
   const [isLogin, setIsLogin] = useState(true);
   const [logPasswordVisible, setLogPasswordVisible] = useState(false);
   const [regPasswordVisible, setRegPasswordVisible] = useState(false);
   const [logPassword, setLogPassword] = useState('');
   const [regPassword, setRegPassword] = useState('');
   const [loggedIn, setLoggedIn] = useState(false);
-  const [username, setUsername] = useState('');
-  const uname = "admin";
-  const pwd = "admin1234";
-  const router = useRouter();
+  const [username, setUsername] = useState('')
+  const uname = "admin"; //hardcoded username
+  const pwd = "admin1234"; //hardcoded pwd
 
+  //hardcoded submit login
   const handleSubmit = (e) => {
     e.preventDefault();
+
     if (username === uname && logPassword === pwd) {
-      sessionStorage.setItem("loggedIn", "true");
-      window.location.href = "/";
+      setLoggedIn(true);
     } else {
       alert('Invalid username or password');
     }
@@ -38,6 +38,17 @@ const AuthForm = () => {
     document.body.appendChild(script2);
   }, []);
 
+  useEffect(() => {
+    if (loggedIn) {
+      sessionStorage.setItem('isLoggedIn', 'true');
+      router.push('/');
+    }
+  }, [loggedIn]);
+
+  const toggleView = (view) => {
+    setIsLogin(view === 'login');
+  };
+
   const togglePasswordVisibility = (type) => {
     if (type === 'login') setLogPasswordVisible(!logPasswordVisible);
     if (type === 'register') setRegPasswordVisible(!regPasswordVisible);
@@ -48,112 +59,105 @@ const AuthForm = () => {
     return isVisible ? 'eye-off-outline' : 'eye-outline';
   };
 
-  if (loggedIn) return <MainPage />;
-
   return (
-    <div className={styles['form-container']}>
-      <div className={styles['form-col']}>
-        <div className={styles['btn-box']}>
-          <button
+    <div className={styles.pageWrapper}>
+      <div className={styles.formContainer}>
+        <div className={styles.formCol}>
+          <div className={styles.btnBox}>
+            <button
             id="register"
-            className={`${styles.btn} ${!isLogin ? styles['btn-1'] : styles['btn-2']}`}
-            onClick={() => setIsLogin(false)}
-          >
-            Sign Up
-          </button>
-          <button
+              className={`${styles.btn} ${!isLogin ? styles.btn1 : styles.btn2}`}
+              onClick={() => setIsLogin(false)}
+            >
+              Sign Up
+            </button>
+            <button
             id="login"
-            className={`${styles.btn} ${isLogin ? styles['btn-1'] : styles['btn-2']}`}
-            onClick={() => setIsLogin(true)}
-          >
-            Sign In
-          </button>
+              className={`${styles.btn} ${isLogin ? styles.btn1 : styles.btn2}`}
+              onClick={() => setIsLogin(true)}
+            >
+              Sign In
+            </button>
+          </div>
+
+          {/* Login Form */}
+          <form className={`${styles.formBox} ${styles.loginForm}`} style={{ left: isLogin ? '50%' : '150%', opacity: isLogin ? 1 : 0 }} onSubmit={handleSubmit}>
+            <div className={styles.formTitle}><span>Sign In</span></div>
+            <div className={styles.formInputs}>
+              <div className={styles.inputBox}>
+                <input 
+                  type="text" 
+                  className={`${styles.inputs} ${styles.inputField}`}
+                  placeholder="Username" 
+                  value={username} 
+                  onChange={e => setUsername(e.target.value)} 
+                  required 
+                />
+                <ion-icon name="person-outline" class={styles.icon} />
+              </div>
+              <div className={styles.inputBox}>
+                <input
+                  type={logPasswordVisible ? 'text' : 'password'}
+                  className={`${styles.inputs} ${styles.inputField}`}
+                  placeholder="Password"
+                  required
+                  value={logPassword}
+                  onChange={(e) => setLogPassword(e.target.value)}
+                />
+                <ion-icon
+                  name={getPasswordIcon(logPassword, logPasswordVisible)}
+                  class={styles.icon}
+                  onClick={() => togglePasswordVisibility('login')}
+                />
+              </div>
+              <div className={styles.forgotPass}>
+                <a href="#">Forgot Password?</a>
+              </div>
+              <div className={styles.inputBox}>
+                <button type="submit" className={`${styles.inputs} ${styles.submitBtn}`}>
+                  <span>Sign In</span>
+                  <ion-icon name="arrow-forward-outline" />
+                </button>
+              </div>
+            </div>
+          </form>
+
+          {/* Register Form */}
+          <form className={`${styles.formBox} ${styles.registerForm}`} style={{ left: isLogin ? '-50%' : '50%', opacity: isLogin ? 0 : 1 }}>
+            <div className={styles.formTitle}><span>Sign Up</span></div>
+            <div className={styles.formInputs}>
+              <div className={styles.inputBox}>
+                <input type="email" className={`${styles.inputs} ${styles.inputField}`} placeholder="Email" required />
+                <ion-icon name="mail-outline" class={styles.icon} />
+              </div>
+              <div className={styles.inputBox}>
+                <input type="text" className={`${styles.inputs} ${styles.inputField}`} placeholder="Username" required />
+                <ion-icon name="person-outline" class={styles.icon} />
+              </div>
+              <div className={styles.inputBox}>
+                <input
+                  type={regPasswordVisible ? 'text' : 'password'}
+                  className={`${styles.inputs} ${styles.inputField}`}
+                  placeholder="Password"
+                  required
+                  value={regPassword}
+                  onChange={(e) => setRegPassword(e.target.value)}
+                />
+                <ion-icon
+                  name={getPasswordIcon(regPassword, regPasswordVisible)}
+                  class={styles.icon}
+                  onClick={() => togglePasswordVisibility('register')}
+                />
+              </div>
+              <div className={styles.inputBox}>
+                <button type="submit" className={`${styles.inputs} ${styles.submitBtn}`}>
+                  <span>Sign Up</span>
+                  <ion-icon name="arrow-forward-outline" />
+                </button>
+              </div>
+            </div>
+          </form>
         </div>
-
-        {/* Login Form */}
-        <form
-          className={`${styles['form-box']} ${styles['login-form']}`}
-          style={{ left: isLogin ? '50%' : '150%', opacity: isLogin ? 1 : 0 }}
-          onSubmit={handleSubmit}
-        >
-          <div className={styles['form-title']}><span>Sign In</span></div>
-          <div className={styles['form-inputs']}>
-            <div className={styles['input-box']}>
-              <input
-                type="text"
-                className={`${styles.inputs} ${styles['input-field']}`}
-                placeholder="Username"
-                value={username}
-                onChange={e => setUsername(e.target.value)}
-                required
-              />
-              <ion-icon name="person-outline" class="icon" />
-            </div>
-            <div className={styles['input-box']}>
-              <input
-                type={logPasswordVisible ? 'text' : 'password'}
-                className={`${styles.inputs} ${styles['input-field']}`}
-                placeholder="Password"
-                required
-                value={logPassword}
-                onChange={(e) => setLogPassword(e.target.value)}
-              />
-              <ion-icon
-                name={getPasswordIcon(logPassword, logPasswordVisible)}
-                class="icon"
-                onClick={() => togglePasswordVisibility('login')}
-              />
-            </div>
-            <div className={styles['forgot-pass']}>
-              <a href="#">Forgot Password?</a>
-            </div>
-            <div className={styles['input-box']}>
-              <button type="submit" className={`${styles.inputs} ${styles['submit-btn']}`}>
-                <span>Sign In</span>
-                <ion-icon name="arrow-forward-outline" />
-              </button>
-            </div>
-          </div>
-        </form>
-
-        {/* Register Form */}
-        <form
-          className={`${styles['form-box']} ${styles['register-form']}`}
-          style={{ left: isLogin ? '-50%' : '50%', opacity: isLogin ? 0 : 1 }}
-        >
-          <div className={styles['form-title']}><span>Sign Up</span></div>
-          <div className={styles['form-inputs']}>
-            <div className={styles['input-box']}>
-              <input type="email" className={`${styles.inputs} ${styles['input-field']}`} placeholder="Email" required />
-              <ion-icon name="mail-outline" class="icon" />
-            </div>
-            <div className={styles['input-box']}>
-              <input type="text" className={`${styles.inputs} ${styles['input-field']}`} placeholder="Username" required />
-              <ion-icon name="person-outline" class="icon" />
-            </div>
-            <div className={styles['input-box']}>
-              <input
-                type={regPasswordVisible ? 'text' : 'password'}
-                className={`${styles.inputs} ${styles['input-field']}`}
-                placeholder="Password"
-                required
-                value={regPassword}
-                onChange={(e) => setRegPassword(e.target.value)}
-              />
-              <ion-icon
-                name={getPasswordIcon(regPassword, regPasswordVisible)}
-                class="icon"
-                onClick={() => togglePasswordVisibility('register')}
-              />
-            </div>
-            <div className={styles['input-box']}>
-              <button type="submit" className={`${styles.inputs} ${styles['submit-btn']}`}>
-                <span>Sign Up</span>
-                <ion-icon name="arrow-forward-outline" />
-              </button>
-            </div>
-          </div>
-        </form>
       </div>
     </div>
   );
