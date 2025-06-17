@@ -1,170 +1,182 @@
-:global(*) {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Courier New', Courier, monospace;
+/* Only reset inside the login component */
+:global(.pageWrapper *) {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Courier New', Courier, monospace;
 }
 
-:global(body) {
-    background-image: url(../images/background.jpg);
-    background-position: center;
-    background-size: cover;
-    background-attachment: fixed;
-    background-repeat: no-repeat;
+.pageWrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    padding: 0 20px;
-}
-
-.form-container{
-    display: flex;
-    width: 450px;
-    height: 600px;
-    border: 3px solid rgba(255,255,255,0.3);
-    border-radius: 30px;
-    backdrop-filter: blur(20px);
-    overflow:hidden;
+  background-image: url(../images/background.jpg);
+  background-position: center;
+  background-size: cover;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
 }
 
-.form-col{
-    position: inherit;
-    width: 100%;
-    overflow:hidden;
+.formContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; /* Align content to top */
+  width: 450px;
+  height: 600px;
+  border: 3px solid rgba(255,255,255,0.3);
+  border-radius: 30px;
+  backdrop-filter: blur(20px);
+  padding-top: 30px;
 }
 
-.btn-box{
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 30px;
-}
-.btn{
-    font-weight: 500;
-    padding: 8px 30px;
-    border: none;
-    border-radius: 30px;
-    background: rgba(255,255,255,0.2);
-    color: #fff;
-    box-shadow: 0 5px 10 px rgba(255,255,255,0.2);
-    cursor: pointer;
-    transform: .2s;
-    transition: background-color 0.3s ease;
-}
-.btn-1{
-    background: #21264D;
-}
-.btn:hover{
-    opacity: 0.85;
+.formCol {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  height: 600px;
 }
 
-.form-box{
-    position: absolute;
-    transform: translateX(-50%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    padding: 0 30px;
-    transition: .3s;
-}
-.form-title{
-    margin: 40px 0;
-    color: #fff;
-    font-size: 28px;
-    font-weight: 600;
+.btnBox {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 30px;
 }
 
-.login-form{
-    left: 50%;
+.btn {
+  font-weight: 500;
+  padding: 8px 30px;
+  border: none;
+  border-radius: 30px;
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+  box-shadow: 0 5px 10px rgba(255,255,255,0.2);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-.register-form{
-    left: -50%;
-}
-.register-form .form-title{
-    margin-block: 40px 20px;
+.btn1 {
+  background: #21264D;
 }
 
-.form-inputs{
-    width: 100%;
-}
-.input-box{
-    position: relative;
-}
-.inputs{
-    width: 100%;
-    height: 55px;
-    margin:10px 0;
-    color: #fff;
-    border:none;
-    border-radius: 50px;
-    box-shadow: 0 0 10px rgba(255,255,255,0.2);
-}
-.input-field{
-    font-size: 16px;
-    padding: 0 40px 0 20px;
-    background: rgba(255,255,255,0.2);
-    outline: none;
-    backdrop-filter: blur(20px);
-}
-::placeholder{
-    color: #fff;
-    font-size: 15px;
-}
-.input-box .icon{
-    position: absolute;
-    top: 50%;
-    right: 20px;
-    transform: translateY(-50%);
-    color: #fff;
-    width: 17px;
-    height: 17px;
+.btn:hover {
+  opacity: 0.85;
 }
 
-.forgot-pass{
-    display: flex;
-    justify-content: right;
-    gap: 5px;
-    cursor: pointer;
+.formBox {
+  position: absolute;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 0 30px;
+  transition: 0.3s;
 }
-.forgot-pass a{
-    color: #fff;
-    text-decoration: none;
-    font-size: 14px;
+
+.formTitle {
+  margin: 40px 0;
+  color: #fff;
+  font-size: 28px;
+  font-weight: 600;
 }
-.forgot-pass a:hover{
-    text-decoration: underline;
+
+.loginForm {
+  left: 50%;
 }
-.submit-btn{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    background: #21264D;
-    cursor: pointer;
-    transition: .3s;
+
+.registerForm {
+  left: -50%;
 }
-.submit-btn:hover{
-    gap: 15px;
+
+.registerForm .formTitle {
+  margin-block: 40px 20px;
+}
+
+.formInputs {
+  width: 100%;
+}
+
+.inputBox {
+  position: relative;
+}
+
+.inputs {
+  width: 100%;
+  height: 55px;
+  margin: 10px 0;
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  box-shadow: 0 0 10px rgba(255,255,255,0.2);
+}
+
+.inputField {
+  font-size: 16px;
+  padding: 0 40px 0 20px;
+  background: rgba(255,255,255,0.2);
+  outline: none;
+  backdrop-filter: blur(20px);
 }
 
 :global(::placeholder) {
-    color: #fff;
-    font-size: 15px;
+  color: #fff;
+  font-size: 15px;
 }
 
-/* For the password input special selectors, wrap with :global */
+.icon {
+  position: absolute;
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+  color: #fff;
+  width: 17px;
+  height: 17px;
+}
+
+.forgotPass {
+  display: flex;
+  justify-content: right;
+  gap: 5px;
+  cursor: pointer;
+}
+
+.forgotPass a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.forgotPass a:hover {
+  text-decoration: underline;
+}
+
+.submitBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: #21264D;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.submitBtn:hover {
+  gap: 15px;
+}
+
+/* Disable password eye icon */
 :global(input[type="password"]::-ms-reveal),
 :global(input[type="password"]::-ms-clear),
 :global(input[type="password"]::-webkit-credentials-auto-fill-button),
 :global(input[type="password"]::-webkit-password-toggle) {
-    display: none !important;
-    appearance: none !important;
+  display: none !important;
+  appearance: none !important;
 }
 
-:global(input[type="password"]) {
-    padding-right: 2.5rem;
+:global(.inputField[type="password"]) {
+  padding-right: 2.5rem;
 }
