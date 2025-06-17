@@ -13,10 +13,10 @@
   justify-content: center;
 
   background-image: url(../images/background.jpg);
-  background-position: center;
-  background-size: cover;
+  /*background-position: center;*/
+  /*background-size: cover;*/
   background-attachment: fixed;
-  background-repeat: no-repeat;
+  /*background-repeat: no-repeat;*/
 }
 
 .formContainer {
