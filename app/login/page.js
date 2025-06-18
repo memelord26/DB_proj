@@ -110,9 +110,6 @@ const AuthForm = () => {
                   onClick={() => togglePasswordVisibility('login')}
                 />
               </div>
-              <div className={styles.forgotPass}>
-                <a href="#">Forgot Password?</a>
-              </div>
               <div className={styles.inputBox}>
                 <button type="submit" className={`${styles.inputs} ${styles.submitBtn}`}>
                   <span>Sign In</span>
