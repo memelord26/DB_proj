@@ -93,7 +93,7 @@ const AuthForm = () => {
                   onChange={e => setUsername(e.target.value)} 
                   required 
                 />
-                <ion-icon name="person-outline" class={styles.icon} />
+                <ion-icon name="person-outline" className={styles.icon} />
               </div>
               <div className={styles.inputBox}>
                 <input
@@ -106,7 +106,7 @@ const AuthForm = () => {
                 />
                 <ion-icon
                   name={getPasswordIcon(logPassword, logPasswordVisible)}
-                  class={styles.icon}
+                  className={styles.icon}
                   onClick={() => togglePasswordVisibility('login')}
                 />
               </div>
@@ -125,11 +125,11 @@ const AuthForm = () => {
             <div className={styles.formInputs}>
               <div className={styles.inputBox}>
                 <input type="email" className={`${styles.inputs} ${styles.inputField}`} placeholder="Email" required />
-                <ion-icon name="mail-outline" class={styles.icon} />
+                <ion-icon name="mail-outline" className={styles.icon} />
               </div>
               <div className={styles.inputBox}>
                 <input type="text" className={`${styles.inputs} ${styles.inputField}`} placeholder="Username" required />
-                <ion-icon name="person-outline" class={styles.icon} />
+                <ion-icon name="person-outline" className={styles.icon} />
               </div>
               <div className={styles.inputBox}>
                 <input
@@ -142,7 +142,7 @@ const AuthForm = () => {
                 />
                 <ion-icon
                   name={getPasswordIcon(regPassword, regPasswordVisible)}
-                  class={styles.icon}
+                  className={styles.icon}
                   onClick={() => togglePasswordVisibility('register')}
                 />
               </div>

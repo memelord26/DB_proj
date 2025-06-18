@@ -11,8 +11,8 @@ export async function GET(request) {
 
     // Use parameterized query to prevent SQL injection
     const sql = search
-      ? "SELECT * FROM movie_table WHERE Actor_Id LIKE ?"
-      : "SELECT * FROM movie_table"
+      ? "SELECT * FROM actor_agency WHERE ActorAgencyID LIKE ?"
+      : "SELECT * FROM actor_agency"
 
     const values = search ? [`%${search}%`] : []
 

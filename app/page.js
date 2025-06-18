@@ -51,7 +51,7 @@ export default function Home() {
   return (
     <div>
       <div>
-        <div class="bg-image"></div>
+        <div className="bg-image"></div>
         <nav className="bg-white border-gray-200 dark:bg-gray-700">
           <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
             <a href="https://flowbite.com/" className="flex items-center space-x-3 rtl:space-x-reverse">
@@ -132,7 +132,7 @@ export default function Home() {
               <input
                 type="text"
                 value={searchInput}
-                onChange={(e) => setSearchInput(e.target.value)}
+                onChange={(e) => setSearchInput(Number(e.target.value))}
                 id="default-search"
                 className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="Search Actors, Movies, etc."
@@ -155,17 +155,19 @@ export default function Home() {
         <table className="min-w-full bg-purple-600">
           <thead>
             <tr>
+              <th className="py-2 px-4 border-b-2 border-gray-300">Agency Actor ID</th>
               <th className="py-2 px-4 border-b-2 border-gray-300">Actor ID</th>
-              <th className="py-2 px-4 border-b-2 border-gray-300">Actor Name</th>
-              <th className="py-2 px-4 border-b-2 border-gray-300">Movie Name</th>
+              <th className="py-2 px-4 border-b-2 border-gray-300">Agency ID</th>
+              <th className="py-2 px-4 border-b-2 border-gray-300">Remarks</th>
             </tr>
           </thead>
           <tbody>
             {posts.map((post, index) => (
               <tr key={index} className="text-center">
-                <td  className="py-2 px-4 border-b border-gray-200">{post.Actor_Id}</td>
-                <td  className="py-2 px-4 border-b border-gray-200">{post.Actor_Name}</td>
-                <td  className="py-2 px-4 border-b border-gray-200">{post.Movie_Name}</td>
+                <td  className="py-2 px-4 border-b border-gray-200">{post.ActorAgencyID}</td>
+                <td  className="py-2 px-4 border-b border-gray-200">{post.ActorID}</td>
+                <td  className="py-2 px-4 border-b border-gray-200">{post.AgencyID}</td>
+                <td  className="py-2 px-4 border-b border-gray-200">{post.Remarks}</td>
               </tr>
             ))}
           </tbody>
