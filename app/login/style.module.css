@@ -137,23 +137,6 @@
   height: 17px;
 }
 
-.forgotPass {
-  display: flex;
-  justify-content: right;
-  gap: 5px;
-  cursor: pointer;
-}
-
-.forgotPass a {
-  color: #fff;
-  text-decoration: none;
-  font-size: 14px;
-}
-
-.forgotPass a:hover {
-  text-decoration: underline;
-}
-
 .submitBtn {
   display: flex;
   align-items: center;
