@@ -11,20 +11,62 @@ const AuthForm = () => {
   const [logPassword, setLogPassword] = useState('');
   const [regPassword, setRegPassword] = useState('');
   const [loggedIn, setLoggedIn] = useState(false);
-  const [username, setUsername] = useState('')
-  const uname = "admin"; //hardcoded username
-  const pwd = "admin1234"; //hardcoded pwd
+  const [username, setUsername] = useState('');
 
-  //hardcoded submit login
-  const handleSubmit = (e) => {
+  //login form submit
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (username === uname && logPassword === pwd) {
-      setLoggedIn(true);
-    } else {
-      alert('Invalid username or password');
+    try {
+      const res = await fetch('/api/users/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password: logPassword })
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        sessionStorage.setItem('isLoggedIn', 'true');
+        router.push('/');
+      } else {
+        alert(data.error || 'Login failed');
+      }
+    } catch (err) {
+      console.error('Login error:', err);
+      alert('Something went wrong');
     }
   };
+
+  // Register form submit
+  const handleRegister = async (e) => {
+    e.preventDefault();
+
+    const email = e.target.email.value;
+    const username = e.target.username.value;
+    const password = regPassword;
+
+    try {
+      const res = await fetch('/api/users/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, username, password })
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        alert('Registration successful! You can now log in.');
+        setIsLogin(true); // Switch to login view
+      } else {
+        alert(data.error || 'Registration failed.');
+      }
+    } catch (err) {
+      console.error('Error:', err);
+      alert('Something went wrong during registration.');
+    }
+  };
+
 
   useEffect(() => {
     const script1 = document.createElement('script');
@@ -90,7 +132,7 @@ const AuthForm = () => {
                   className={`${styles.inputs} ${styles.inputField}`}
                   placeholder="Username" 
                   value={username} 
-                  onChange={e => setUsername(e.target.value)} 
+                  onChange={(e) => setUsername(e.target.value)} 
                   required 
                 />
                 <ion-icon name="person-outline" className={styles.icon} />
@@ -120,15 +162,15 @@ const AuthForm = () => {
           </form>
 
           {/* Register Form */}
-          <form className={`${styles.formBox} ${styles.registerForm}`} style={{ left: isLogin ? '-50%' : '50%', opacity: isLogin ? 0 : 1 }}>
+          <form className={`${styles.formBox} ${styles.registerForm}`} style={{ left: isLogin ? '-50%' : '50%', opacity: isLogin ? 0 : 1 }} onSubmit={handleRegister}>
             <div className={styles.formTitle}><span>Sign Up</span></div>
             <div className={styles.formInputs}>
               <div className={styles.inputBox}>
-                <input type="email" className={`${styles.inputs} ${styles.inputField}`} placeholder="Email" required />
+                <input type="email" name="email" className={`${styles.inputs} ${styles.inputField}`} placeholder="Email" required />
                 <ion-icon name="mail-outline" className={styles.icon} />
               </div>
               <div className={styles.inputBox}>
-                <input type="text" className={`${styles.inputs} ${styles.inputField}`} placeholder="Username" required />
+                <input type="text" name="username" className={`${styles.inputs} ${styles.inputField}`} placeholder="Username" required />
                 <ion-icon name="person-outline" className={styles.icon} />
               </div>
               <div className={styles.inputBox}>
