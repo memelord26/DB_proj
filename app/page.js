@@ -155,19 +155,17 @@ export default function Home() {
         <table className="min-w-full bg-purple-600">
           <thead>
             <tr>
-              <th className="py-2 px-4 border-b-2 border-gray-300">Agency Actor ID</th>
-              <th className="py-2 px-4 border-b-2 border-gray-300">Actor ID</th>
-              <th className="py-2 px-4 border-b-2 border-gray-300">Agency ID</th>
-              <th className="py-2 px-4 border-b-2 border-gray-300">Remarks</th>
+              <th className="py-2 px-4 border-b-2 border-gray-300">Actor Name</th>
+              <th className="py-2 px-4 border-b-2 border-gray-300">Movie Name</th>
+              <th className="py-2 px-4 border-b-2 border-gray-300">Release Date</th>
             </tr>
           </thead>
           <tbody>
             {posts.map((post, index) => (
               <tr key={index} className="text-center">
-                <td  className="py-2 px-4 border-b border-gray-200">{post.ActorAgencyID}</td>
-                <td  className="py-2 px-4 border-b border-gray-200">{post.ActorID}</td>
-                <td  className="py-2 px-4 border-b border-gray-200">{post.AgencyID}</td>
-                <td  className="py-2 px-4 border-b border-gray-200">{post.Remarks}</td>
+                <td  className="py-2 px-4 border-b border-gray-200">{post.Actor_Name}</td>
+                <td  className="py-2 px-4 border-b border-gray-200">{post.Movie_Name}</td>
+                <td  className="py-2 px-4 border-b border-gray-200">{post.Release_Date}</td>
               </tr>
             ))}
           </tbody>

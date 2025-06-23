@@ -11,10 +11,10 @@ export async function GET(request) {
 
     // Use parameterized query to prevent SQL injection
     const sql = search
-      ? "SELECT * FROM actor_agency WHERE ActorAgencyID = ?"
-      : "SELECT * FROM actor_agency"
+      ? "SELECT * FROM movie_table WHERE Actor_Name LIKE ?"
+      : "SELECT * FROM movie_table"
 
-    const values = search ? [`${search}`] : []
+    const values = search ? [`${search}%`] : []
 
     const [posts] = await db.query(sql, values)
 
