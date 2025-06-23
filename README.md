@@ -7,6 +7,8 @@ First, run the development server:
 ```bash
 npm install next
 
+npm install bcrypt
+
 npm run dev
 # or
 yarn dev
