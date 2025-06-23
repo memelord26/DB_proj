@@ -1,9 +1,9 @@
-import { createConnection } from "@/lib/db"
+import { createCelebConnection } from "@/lib/db"
 import { NextResponse } from "next/server"
 
 export async function GET(request) {
   try {
-    const db = await createConnection()
+    const db = await createCelebConnection()
 
     // Extract search query from URL
     const { searchParams } = new URL(request.url)
