@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import { NextResponse } from "next/server";
-import { debounce } from 'lodash';
+import { debounce, set } from 'lodash';
 import { useRouter } from "next/navigation";
 import { useState, useEffect, useMemo } from 'react';
 
@@ -12,41 +12,83 @@ export default function Home() {
   const [loggedIn, setLoggedIn] = useState(false);
   const router = useRouter();
 
-  const fetchData = async () => {
-    try{
-      const res = await fetch(`/api/posts`);
-      const json = await res.json();
-      setPosts(json.posts);
-      if (Array.isArray(json.posts)) {
-        setPosts(json.posts);
-      } else {
-        console.error("Invalid data format:", json);
-        setPosts([]);
-      }
-    } catch (error) {
-      console.error("Error fetching posts:", error);
-      setPosts([]);
-    }
-  }
+const fetchData = async (search = '') => {
+  try {
+    const res = await fetch(`/api/posts${search ? `?search=${encodeURIComponent(search)}` : ''}`)
 
-  useEffect(() => {
-    const isLoggedIn = sessionStorage.getItem('isLoggedIn');
-    if (!isLoggedIn) {
-      router.replace('/login');
-    } else {
-      fetchData();
+    // Check if response is OK and content-type is JSON
+    const contentType = res.headers.get('content-type')
+    if (!res.ok) {
+      const text = await res.text()
+      console.error('Server error:', res.status, text)
+      setPosts([])
+      return
     }
-  }, []);
 
-  const handleSearch = async () => {
-    try {
-      const res = await fetch(`/api/posts?search=${encodeURIComponent(searchInput)}`)
-      const json = await res.json()
+    if (!contentType || !contentType.includes('application/json')) {
+      const text = await res.text()
+      console.error('Invalid response type:', contentType, text)
+      setPosts([])
+      return
+    }
+
+    const json = await res.json()
+
+    if (Array.isArray(json.posts)) {
       setPosts(json.posts)
-    } catch (error) {
-      console.log(error)
+    } else {
+      console.error('Invalid data format:', json)
+      setPosts([])
     }
-  };
+  } catch (error) {
+    console.error('Error fetching data:', error)
+    setPosts([])
+  }
+}
+
+useEffect(() => {
+  const isLoggedIn = sessionStorage.getItem('isLoggedIn');
+
+  if (!isLoggedIn){
+    router.replace('/login')
+  } else {
+    setLoggedIn(true)
+    fetchData()
+  }
+}, [])
+  
+ const handleSearch = async () => {
+  try {
+    const res = await fetch(`/api/posts?search=${encodeURIComponent(searchInput)}`)
+
+    const contentType = res.headers.get('content-type')
+    if (!res.ok) {
+      const text = await res.text()
+      console.error('Search request failed:', res.status, text)
+      setPosts([])
+      return
+    }
+
+    if (!contentType || !contentType.includes('application/json')) {
+      const text = await res.text()
+      console.error('Unexpected response format:', contentType, text)
+      setPosts([])
+      return
+    }
+
+    const json = await res.json()
+
+    if (Array.isArray(json.posts)) {
+      setPosts(json.posts)
+    } else {
+      console.error('Invalid data format in search:', json)
+      setPosts([])
+    }
+  } catch (error) {
+    console.error('Error performing search:', error)
+    setPosts([])
+  }
+}
 
   return (
     <div>
@@ -76,7 +118,7 @@ export default function Home() {
                   <button
                     onClick={() => {
                       sessionStorage.removeItem('isLoggedIn');
-                      router.push('/login');
+                      router.replace('/login');
                     }}
                     className="cursor-pointer block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">
                       Log Out

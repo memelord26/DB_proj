@@ -1,26 +1,27 @@
-import { createCelebConnection } from "@/lib/db"
 import { NextResponse } from "next/server"
+import supabase from "@/lib/db"
 
 export async function GET(request) {
   try {
-    const db = await createCelebConnection()
-
-    // Extract search query from URL
     const { searchParams } = new URL(request.url)
-    const search = searchParams.get('search') || ''
+    const search = (searchParams.get('search') || '').trim()
 
-    // Use parameterized query to prevent SQL injection
-    const sql = search
-      ? "SELECT * FROM movie_table WHERE Actor_Name LIKE ?"
-      : "SELECT * FROM movie_table"
+    let query = supabase.from('movie_table').select('*')
 
-    const values = search ? [`${search}%`] : []
+    if (search) {
+      // Use filter() for case-sensitive column names
+      query = query.filter('Actor_Name', 'ilike', `%${search}%`)
+    }
 
-    const [posts] = await db.query(sql, values)
+    const { data: posts, error } = await query
+
+    console.log("Supabase returned posts:", posts)
+
+    if (error) throw error
 
     return NextResponse.json({ posts })
   } catch (error) {
-    console.error(error)
+    console.error('Supabase error:', error)
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 }

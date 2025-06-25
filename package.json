@@ -9,11 +9,15 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.50.2",
+    "bcrypt": "^6.0.0",
     "lodash": "^4.17.21",
     "mysql2": "^3.14.1",
     "next": "15.3.3",
+    "postgres": "^3.4.7",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "supabase": "^2.26.9"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

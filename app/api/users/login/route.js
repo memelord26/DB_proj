@@ -1,4 +1,4 @@
-import { createUsersConnection } from "@/lib/db"
+import { createUsersConnection } from "@/lib/sqldb.js"
 import bcrypt from "bcrypt"
 import { NextResponse } from "next/server"
 
