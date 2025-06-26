@@ -33,6 +33,7 @@ const AuthForm = () => {
 
       if (res.ok) {
         sessionStorage.setItem('isLoggedIn', 'true');
+        sessionStorage.setItem('username', username);
         router.push('/');
       } else {
         alert(data.error || 'Login failed');

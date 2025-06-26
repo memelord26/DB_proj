@@ -115,6 +115,9 @@ useEffect(() => {
                   <a href="#" className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">About</a>
                 </li>
                 <li>
+                  <a href="/profile" className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Profile</a>
+                </li>
+                <li>
                   <button
                     onClick={() => {
                       sessionStorage.removeItem('isLoggedIn');
@@ -190,28 +193,30 @@ useEffect(() => {
           </form>
         </div>
 
-      <div className="mt-20">
-        <h1 className="text-4xl font-bold text-center">
+      <div className="mt-20 px-4">
+        <h1 className="text-4xl font-bold text-center mb-8">
           Celebrity Information
         </h1>
-        <table className="min-w-full bg-purple-900">
-          <thead>
-            <tr>
-              <th className="py-2 px-4 border-b-2 border-gray-300">Actor Name</th>
-              <th className="py-2 px-4 border-b-2 border-gray-300">Movie Name</th>
-              <th className="py-2 px-4 border-b-2 border-gray-300">Release Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            {posts.map((post, index) => (
-              <tr key={index} className="text-center">
-                <td  className="py-2 px-4 border-b border-gray-200">{post.Actor_Name}</td>
-                <td  className="py-2 px-4 border-b border-gray-200">{post.Movie_Name}</td>
-                <td  className="py-2 px-4 border-b border-gray-200">{post.Release_Date}</td>
+        <div className="flex justify-center">
+          <table className="max-w-6xl w-full bg-purple-900 rounded-lg shadow-lg overflow-hidden">
+            <thead className="bg-purple-800">
+              <tr>
+                <th className="py-4 px-6 text-white font-semibold text-lg border-b-2 border-purple-600">Actor Name</th>
+                <th className="py-4 px-6 text-white font-semibold text-lg border-b-2 border-purple-600">Movie Name</th>
+                <th className="py-4 px-6 text-white font-semibold text-lg border-b-2 border-purple-600">Release Date</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {posts.map((post, index) => (
+                <tr key={index} className={`text-center hover:bg-purple-800 transition-colors ${index % 2 === 0 ? 'bg-purple-900' : 'bg-purple-800'}`}>
+                  <td className="py-4 px-6 border-b border-purple-600 text-white font-medium">{post.Actor_Name}</td>
+                  <td className="py-4 px-6 border-b border-purple-600 text-white font-medium">{post.Movie_Name}</td>
+                  <td className="py-4 px-6 border-b border-purple-600 text-white font-medium">{post.Release_Date}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
     </div>
