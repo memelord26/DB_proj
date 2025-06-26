@@ -432,7 +432,7 @@ const ProfilePage = () => {
                     </label>
                     <div className="relative">
                       <input
-                        type="password"
+                        type={PasswordVisible ? 'text' : 'password'}
                         value={deletePassword}
                         onChange={(e) => setDeletePassword(e.target.value)}
                         className="w-full h-12 px-4 pr-10 bg-white/20 backdrop-blur-lg border-none rounded-full text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-red-300/30 shadow-md text-sm"
@@ -440,8 +440,9 @@ const ProfilePage = () => {
                         required
                       />
                       <ion-icon 
-                        name="lock-closed-outline" 
+                        name={getPasswordIcon(deletePassword, PasswordVisible)}
                         className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white w-4 h-4"
+                        onClick={() => togglePasswordVisibility('view')}
                       />
                     </div>
                   </div>
