@@ -19,9 +19,7 @@ remeber to enter your mySQL credentials in .env
 First, run the development server:
 
 ```bash
-npm install next
-
-npm install bcrypt
+npm install next bcrypt
 
 npm run dev
 # or
