@@ -137,6 +137,21 @@
   height: 17px;
 }
 
+.forgot{
+    display: flex;
+    justify-content: right;
+    gap: 5px;
+    cursor: pointer;
+}
+.forgot a{
+    color: #fff;
+    text-decoration: none;
+    font-size: 14px;
+}
+.forgot a:hover{
+    text-decoration: underline;
+}
+
 .submitBtn {
   display: flex;
   align-items: center;
