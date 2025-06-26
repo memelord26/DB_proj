@@ -63,7 +63,7 @@ const AuthForm = () => {
 
       if (res.ok) {
         alert('Registration successful! You can now log in.');
-        setIsLogin(true); // Switch to login view
+        toggleView(true); // Switch to login view
       } else {
         alert(data.error || 'Registration failed.');
       }
@@ -173,7 +173,8 @@ const AuthForm = () => {
               className={`${styles.btn} ${(isLogin && !isForgotPassword) || isForgotPassword ? styles.btn1 : styles.btn2}`}
               onClick={() => toggleView('login')}
             >
-              {isForgotPassword ? 'Back to Sign In' : 'Sign In'}
+              {/*{isForgotPassword ? 'Back to Sign In' : 'Sign In'}*/}
+              {'Sign In'}
             </button>
           </div>
 
