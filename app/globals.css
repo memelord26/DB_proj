@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: rgba(13, 13, 13, 0.9);
+  --foreground: #ededed;
 }
 
 @theme inline {
@@ -40,4 +40,37 @@ body::before {
   background-attachment: fixed;
   filter: blur(8px);
   z-index: -1;
+}
+
+/* Navigation styling fixes */
+nav {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+nav .text-2xl {
+  color: #1f2937 !important; /* Dark gray for StarSearch text */
+}
+
+nav a, nav button {
+  color: #1f2937 !important;
+}
+
+nav a:hover, nav button:hover {
+  color: #3b82f6 !important; /* Blue on hover */
+}
+
+@media (prefers-color-scheme: dark) {
+  nav {
+    background-color: rgba(55, 65, 81, 0.95) !important;
+  }
+  
+  nav .text-2xl {
+    color: #ffffff !important;
+  }
+  
+  nav a, nav button {
+    color: #ffffff !important;
+  }
 }
