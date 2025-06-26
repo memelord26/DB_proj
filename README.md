@@ -15,11 +15,12 @@ CREATE TABLE accounts (
 );
 ```
 remeber to enter your mySQL credentials in .env
+//remove soon
 
 First, run the development server:
 
 ```bash
-npm install next bcrypt
+npm install next
 
 npm run dev
 # or
