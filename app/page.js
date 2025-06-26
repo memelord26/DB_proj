@@ -5,95 +5,112 @@ import { debounce, set } from 'lodash';
 import { useRouter } from "next/navigation";
 import { useState, useEffect, useMemo } from 'react';
 
-
 export default function Home() {
-  const [posts, setPosts] = useState([])
-  const [searchInput, setSearchInput] = useState('')
+  const [posts, setPosts] = useState([]);
+  const [searchInput, setSearchInput] = useState('');
   const [loggedIn, setLoggedIn] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
 const fetchData = async (search = '') => {
   try {
-    const res = await fetch(`/api/posts${search ? `?search=${encodeURIComponent(search)}` : ''}`)
+    const res = await fetch(`/api/posts${search ? `?search=${encodeURIComponent(search)}` : ''}`);
 
     // Check if response is OK and content-type is JSON
-    const contentType = res.headers.get('content-type')
+    const contentType = res.headers.get('content-type');
     if (!res.ok) {
-      const text = await res.text()
-      console.error('Server error:', res.status, text)
-      setPosts([])
-      return
+      const text = await res.text();
+      console.error('Server error:', res.status, text);
+      setPosts([]);
+      return;
     }
 
     if (!contentType || !contentType.includes('application/json')) {
-      const text = await res.text()
-      console.error('Invalid response type:', contentType, text)
-      setPosts([])
-      return
+      const text = await res.text();
+      console.error('Invalid response type:', contentType, text);
+      setPosts([]);
+      return;
     }
 
-    const json = await res.json()
+    const json = await res.json();
 
     if (Array.isArray(json.posts)) {
-      setPosts(json.posts)
+      setPosts(json.posts);
     } else {
-      console.error('Invalid data format:', json)
-      setPosts([])
+      console.error('Invalid data format:', json);
+      setPosts([]);
     }
   } catch (error) {
-    console.error('Error fetching data:', error)
-    setPosts([])
+    console.error('Error fetching data:', error);
+    setPosts([]);
   }
-}
+};
 
 useEffect(() => {
   const isLoggedIn = sessionStorage.getItem('isLoggedIn');
 
-  if (!isLoggedIn){
-    router.replace('/login')
+  if (!isLoggedIn) {
+    router.replace('/login');
   } else {
-    setLoggedIn(true)
-    fetchData()
+    setLoggedIn(true);
+    fetchData();
   }
-}, [])
+  setIsLoading(false);
+}, []);
   
  const handleSearch = async () => {
   try {
-    const res = await fetch(`/api/posts?search=${encodeURIComponent(searchInput)}`)
+    const res = await fetch(`/api/posts?search=${encodeURIComponent(searchInput)}`);
 
-    const contentType = res.headers.get('content-type')
+    const contentType = res.headers.get('content-type');
     if (!res.ok) {
-      const text = await res.text()
-      console.error('Search request failed:', res.status, text)
-      setPosts([])
-      return
+      const text = await res.text();
+      console.error('Search request failed:', res.status, text);
+      setPosts([]);
+      return;
     }
 
     if (!contentType || !contentType.includes('application/json')) {
-      const text = await res.text()
-      console.error('Unexpected response format:', contentType, text)
-      setPosts([])
-      return
+      const text = await res.text();
+      console.error('Unexpected response format:', contentType, text);
+      setPosts([]);
+      return;
     }
 
-    const json = await res.json()
+    const json = await res.json();
 
     if (Array.isArray(json.posts)) {
-      setPosts(json.posts)
+      setPosts(json.posts);
     } else {
-      console.error('Invalid data format in search:', json)
-      setPosts([])
+      console.error('Invalid data format in search:', json);
+      setPosts([]);
     }
   } catch (error) {
-    console.error('Error performing search:', error)
-    setPosts([])
+    console.error('Error performing search:', error);
+    setPosts([]);
   }
-}
+};
 
   return (
     <div>
-      <div>
-        <div className="bg-image"></div>
+      {isLoading ? (
+        // Loading state - prevent flash of content
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-700 mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading...</p>
+          </div>
+        </div>
+      ) : !loggedIn ? (
+        // This shouldn't render since we redirect, but just in case
+        <div className="min-h-screen flex items-center justify-center">
+          <p className="text-gray-600">Redirecting to login...</p>
+        </div>
+      ) : (
+        // Main content - only render when authenticated
+        <>
+          <div>
+            <div className="bg-image"></div>
         <nav className="bg-white border-gray-200 dark:bg-gray-700">
           <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
             <a href="https://flowbite.com/" className="flex items-center space-x-3 rtl:space-x-reverse">
@@ -146,8 +163,8 @@ useEffect(() => {
           <form
             className="max-w-md mx-auto"
             onSubmit={(e) => {
-              e.preventDefault() //  prevent page reload
-              handleSearch()     //  your search function
+              e.preventDefault(); // prevent page reload
+              handleSearch();     // your search function
             }}
           >
             <label
@@ -219,6 +236,8 @@ useEffect(() => {
         </div>
       </div>
 
+        </>
+      )}
     </div>
   );
 }
