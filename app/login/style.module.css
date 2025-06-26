@@ -92,6 +92,10 @@
   left: -50%;
 }
 
+.forgotForm {
+  left: -150%;
+}
+
 .registerForm .formTitle {
   margin-block: 40px 20px;
 }
