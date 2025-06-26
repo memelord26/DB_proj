@@ -1,82 +1,71 @@
-import { NextResponse } from "next/server";
-import supabase from "@/lib/db";
-import bcrypt from 'bcryptjs';
+import { NextResponse } from "next/server"
+import clientPromise from "@/lib/mongodb"
+import bcrypt from "bcryptjs"
+import { ObjectId } from "mongodb"
 
-export async function PUT(req) {
-  const { userId, newEmail, newPassword, currentPassword } = await req.json();
+export async function PUT(request) {
+  const { userId, newEmail, newPassword, currentPassword } = await request.json()
 
   try {
     if (!userId || !currentPassword) {
-      return NextResponse.json({ error: 'User ID and current password are required' }, { status: 400 });
+      return NextResponse.json({ error: 'User ID and current password are required' }, { status: 400 })
     }
 
-    const { data: users, error: selectError } = await supabase
-      .from('accounts')
-      .select('*')
-      .eq('id', userId)
-      .limit(1);
+    const client = await clientPromise
+    const db = client.db('starsearch')
+    const accounts = db.collection('accounts')
 
-    if (selectError) {
-      console.error('Supabase user read error:', selectError.message);
-      return NextResponse.json({ error: 'Database error' }, { status: 500 });
+    // Find user by ID
+    const user = await accounts.findOne({ _id: new ObjectId(userId) })
+
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
-    if (!users || users.length === 0) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 });
-    }
-
-    const user = users[0];
-    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    const isMatch = await bcrypt.compare(currentPassword, user.password)
 
     if (!isMatch) {
-      return NextResponse.json({ error: 'Current password is incorrect' }, { status: 401 });
+      return NextResponse.json({ error: 'Current password is incorrect' }, { status: 401 })
     }
 
-    const updateData = {};
+    const updateData = { updatedAt: new Date() }
 
     if (newEmail && newEmail !== user.email) {
-      const { data: emailExists, error: emailCheckError } = await supabase
-        .from('accounts')
-        .select('email')
-        .eq('email', newEmail)
-        .neq('id', userId)
-        .limit(1);
+      // Check if email already exists
+      const emailExists = await accounts.findOne({ 
+        email: newEmail, 
+        _id: { $ne: new ObjectId(userId) } 
+      })
 
-      if (emailCheckError) {
-        console.error('Supabase email check error:', emailCheckError.message);
-        return NextResponse.json({ error: 'Database error checking email' }, { status: 500 });
+      if (emailExists) {
+        return NextResponse.json({ error: 'Email already in use' }, { status: 409 })
       }
 
-      if (emailExists && emailExists.length > 0) {
-        return NextResponse.json({ error: 'Email already exists' }, { status: 409 });
-      }
-
-      updateData.email = newEmail;
+      updateData.email = newEmail
     }
 
     if (newPassword) {
-      const hashedPassword = await bcrypt.hash(newPassword, 10);
-      updateData.password = hashedPassword;
+      const hashedPassword = await bcrypt.hash(newPassword, 10)
+      updateData.password = hashedPassword
     }
 
-    if (Object.keys(updateData).length === 0) {
-      return NextResponse.json({ error: 'No changes to update' }, { status: 400 });
+    if (Object.keys(updateData).length === 1) { // Only updatedAt
+      return NextResponse.json({ error: 'No changes to update' }, { status: 400 })
     }
 
-    const { error: updateError } = await supabase
-      .from('accounts')
-      .update(updateData)
-      .eq('id', userId);
+    const result = await accounts.updateOne(
+      { _id: new ObjectId(userId) },
+      { $set: updateData }
+    )
 
-    if (updateError) {
-      console.error('Supabase update error:', updateError.message);
-      return NextResponse.json({ error: updateError.message || 'Database error updating profile' }, { status: 500 });
+    if (result.matchedCount === 0) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
-    return NextResponse.json({ success: true, message: 'Profile updated successfully' });
+    return NextResponse.json({ success: true, message: 'Profile updated successfully' })
 
-  } catch (err) {
-    console.error('General update profile error:', err);
-    return NextResponse.json({ error: err.message || 'Internal server error' }, { status: 500 });
+  } catch (error) {
+    console.error('General profile update error:', error)
+    return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 })
   }
 }
