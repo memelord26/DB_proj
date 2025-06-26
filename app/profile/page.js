@@ -1,12 +1,15 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import styles from './style.module.css';
 
 const ProfilePage = () => {
   const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
   const [currentPassword, setCurrentPassword] = useState('');
+  const [PasswordVisible, setPasswordVisible] = useState(false);
+  const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
   const [showPasswordAuth, setShowPasswordAuth] = useState(true);
   
   // Form states
@@ -25,6 +28,18 @@ const ProfilePage = () => {
     if (!isLoggedIn) {
       router.replace('/login');
     }
+  }, []);
+
+  useEffect(() => {
+    const script1 = document.createElement('script');
+    script1.type = 'module';
+    script1.src = 'https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js';
+    document.body.appendChild(script1);
+
+    const script2 = document.createElement('script');
+    script2.noModule = true;
+    script2.src = 'https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js';
+    document.body.appendChild(script2);
   }, []);
 
   // Authenticate user with current password
@@ -166,6 +181,17 @@ const ProfilePage = () => {
     }
   };
 
+  //show password btn
+  const togglePasswordVisibility = (type) => {
+    if (type === 'view') setPasswordVisible(!PasswordVisible);
+    if (type === 'confirm') setConfirmPasswordVisible(!confirmPasswordVisible);
+  };
+
+  const getPasswordIcon = (password, isVisible) => {
+    if (password.length === 0) return 'lock-closed-outline';
+    return isVisible ? 'eye-off-outline' : 'eye-outline';
+  };
+
   if (showPasswordAuth) {
     return (
       <div className="min-h-screen flex items-center justify-content" style={{
@@ -186,7 +212,7 @@ const ProfilePage = () => {
                 </label>
                 <div className="relative">
                   <input
-                    type="password"
+                    type={PasswordVisible ? 'text' : 'password'}
                     value={currentPassword}
                     onChange={(e) => setCurrentPassword(e.target.value)}
                     className="w-full h-14 px-5 pr-12 bg-white/20 backdrop-blur-lg border-none rounded-full text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/30 shadow-md"
@@ -194,8 +220,9 @@ const ProfilePage = () => {
                     required
                   />
                   <ion-icon 
-                    name="lock-closed-outline" 
+                    name={getPasswordIcon(currentPassword, PasswordVisible)}
                     className="absolute right-5 top-1/2 transform -translate-y-1/2 text-white w-5 h-5"
+                    onClick={() => togglePasswordVisibility('view')}
                   />
                 </div>
               </div>
@@ -334,7 +361,7 @@ const ProfilePage = () => {
                   </label>
                   <div className="relative">
                     <input
-                      type="password"
+                      type={PasswordVisible ? 'text' : 'password'}
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
                       className="w-full h-12 px-4 pr-10 bg-white/20 backdrop-blur-lg border-none rounded-full text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/30 shadow-md text-sm"
@@ -342,8 +369,9 @@ const ProfilePage = () => {
                       required
                     />
                     <ion-icon 
-                      name="lock-closed-outline" 
+                      name={getPasswordIcon(newPassword, PasswordVisible)}
                       className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white w-4 h-4"
+                      onClick={() => togglePasswordVisibility('view')}
                     />
                   </div>
                 </div>
@@ -353,7 +381,7 @@ const ProfilePage = () => {
                   </label>
                   <div className="relative">
                     <input
-                      type="password"
+                      type={confirmPasswordVisible ? 'text' : 'password'}
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       className="w-full h-12 px-4 pr-10 bg-white/20 backdrop-blur-lg border-none rounded-full text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/30 shadow-md text-sm"
@@ -361,8 +389,9 @@ const ProfilePage = () => {
                       required
                     />
                     <ion-icon 
-                      name="lock-closed-outline" 
+                      name={getPasswordIcon(confirmPassword, confirmPasswordVisible)}
                       className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white w-4 h-4"
+                      onClick={() => togglePasswordVisibility('confirm')}
                     />
                   </div>
                 </div>
