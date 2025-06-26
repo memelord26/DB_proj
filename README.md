@@ -14,6 +14,7 @@ CREATE TABLE accounts (
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 ```
+remeber to enter your mySQL credentials in .env
 
 First, run the development server:
 
