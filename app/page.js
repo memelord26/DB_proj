@@ -194,7 +194,7 @@ useEffect(() => {
         <h1 className="text-4xl font-bold text-center">
           Celebrity Information
         </h1>
-        <table className="min-w-full bg-purple-600">
+        <table className="min-w-full bg-purple-900">
           <thead>
             <tr>
               <th className="py-2 px-4 border-b-2 border-gray-300">Actor Name</th>
