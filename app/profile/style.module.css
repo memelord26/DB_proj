@@ -1,0 +1,12 @@
+/* Disable password default eye icon */
+:global(input[type="password"]::-ms-reveal),
+:global(input[type="password"]::-ms-clear),
+:global(input[type="password"]::-webkit-credentials-auto-fill-button),
+:global(input[type="password"]::-webkit-password-toggle) {
+  display: none !important;
+  appearance: none !important;
+}
+
+:global(.inputField[type="password"]) {
+  padding-right: 2.5rem;
+}
