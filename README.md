@@ -2,21 +2,6 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-Users database setup in mySQL:
-```bash
-CREATE DATABASE users;
-
-CREATE TABLE accounts (
-	id INT AUTO_INCREMENT PRIMARY KEY,
-	email VARCHAR(100)UNIQUE NOT NULL,
-	username VARCHAR(20)UNIQUE NOT NULL,
-	password VARCHAR(100)NOT NULL,
-	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-```
-remeber to enter your mySQL credentials in .env
-//remove soon
-
 First, run the development server:
 
 ```bash
