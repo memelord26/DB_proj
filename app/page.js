@@ -10,6 +10,7 @@ export default function Home() {
   const [searchInput, setSearchInput] = useState('');
   const [loggedIn, setLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [stats, setStats] = useState({ recentMovies: [], mostActiveActors: [] });
   const router = useRouter();
 
 const fetchData = async (search = '') => {
@@ -46,6 +47,18 @@ const fetchData = async (search = '') => {
   }
 };
 
+const fetchStats = async () => {
+  try {
+    const res = await fetch('/api/stats');
+    if (res.ok) {
+      const data = await res.json();
+      setStats(data);
+    }
+  } catch (error) {
+    console.error('Error fetching stats:', error);
+  }
+};
+
 useEffect(() => {
   const isLoggedIn = sessionStorage.getItem('isLoggedIn');
 
@@ -54,6 +67,7 @@ useEffect(() => {
   } else {
     setLoggedIn(true);
     fetchData();
+    fetchStats();
   }
   setIsLoading(false);
 }, []);
@@ -151,10 +165,10 @@ useEffect(() => {
       </div>
 
       <div className="mt-20">
-        <h1 className="text-4xl font-bold text-center">
+        <h1 className="text-4xl font-bold text-center text-white drop-shadow-lg">
           Welcome to StarSearch
         </h1>
-        <p className="text-center">
+        <p className="text-center text-white text-lg drop-shadow-md">
           The place to search for celebrity information
         </p>
       </div>
@@ -198,7 +212,6 @@ useEffect(() => {
                 id="default-search"
                 className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="Search Actors, Movies, etc."
-                required
               />
               <button
                 type="submit"
@@ -210,8 +223,71 @@ useEffect(() => {
           </form>
         </div>
 
+      {/* Statistics Section */}
+      <div className="mt-16 px-4">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl font-bold text-center mb-8 text-white drop-shadow-lg">
+            Statistics
+          </h2>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+            {/* Recent Movies */}
+            <div className="bg-purple-800 dark:bg-purple-900 rounded-lg shadow-lg p-6">
+              <h3 className="text-2xl font-semibold mb-4 text-white">
+                Recent Movies (Last 5 Years)
+              </h3>
+              {stats.recentMovies.length > 0 ? (
+                <div className="space-y-2 max-h-60 overflow-y-auto">
+                  {stats.recentMovies.map((movie, index) => (
+                    <div key={index} className="flex justify-between items-center p-2 hover:bg-purple-700 dark:hover:bg-purple-800 rounded">
+                      <button 
+                        onClick={() => router.push(`/movie/${encodeURIComponent(movie.Movie_Name)}`)}
+                        className="text-purple-200 hover:text-white hover:underline text-left"
+                      >
+                        {movie.Movie_Name}
+                      </button>
+                      <span className="text-sm text-purple-300">
+                        {movie.Release_Date}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-purple-300">No recent movies data available</p>
+              )}
+            </div>
+
+            {/* Most Active Actors */}
+            <div className="bg-purple-800 dark:bg-purple-900 rounded-lg shadow-lg p-6">
+              <h3 className="text-2xl font-semibold mb-4 text-white">
+                Most Active Actors
+              </h3>
+              {stats.mostActiveActors.length > 0 ? (
+                <div className="space-y-2 max-h-60 overflow-y-auto">
+                  {stats.mostActiveActors.map((actor, index) => (
+                    <div key={index} className="flex justify-between items-center p-2 hover:bg-purple-700 dark:hover:bg-purple-800 rounded">
+                      <button 
+                        onClick={() => router.push(`/actor/${encodeURIComponent(actor.Actor_Name)}`)}
+                        className="text-purple-200 hover:text-white hover:underline text-left"
+                      >
+                        {actor.Actor_Name}
+                      </button>
+                      <span className="bg-purple-600 text-white px-2 py-1 rounded-full text-sm">
+                        {actor.movie_count} movies
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-purple-300">No actor data available</p>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="mt-20 px-4">
-        <h1 className="text-4xl font-bold text-center mb-8">
+        <h1 className="text-4xl font-bold text-center mb-8 text-white drop-shadow-lg">
           Celebrity Information
         </h1>
         <div className="flex justify-center">
@@ -226,8 +302,22 @@ useEffect(() => {
             <tbody>
               {posts.map((post, index) => (
                 <tr key={index} className={`text-center hover:bg-purple-800 transition-colors ${index % 2 === 0 ? 'bg-purple-900' : 'bg-purple-800'}`}>
-                  <td className="py-4 px-6 border-b border-purple-600 text-white font-medium">{post.Actor_Name}</td>
-                  <td className="py-4 px-6 border-b border-purple-600 text-white font-medium">{post.Movie_Name}</td>
+                  <td className="py-4 px-6 border-b border-purple-600 text-white font-medium">
+                    <button 
+                      onClick={() => router.push(`/actor/${encodeURIComponent(post.Actor_Name)}`)}
+                      className="hover:underline cursor-pointer text-purple-200 hover:text-white transition-colors"
+                    >
+                      {post.Actor_Name}
+                    </button>
+                  </td>
+                  <td className="py-4 px-6 border-b border-purple-600 text-white font-medium">
+                    <button 
+                      onClick={() => router.push(`/movie/${encodeURIComponent(post.Movie_Name)}`)}
+                      className="hover:underline cursor-pointer text-purple-200 hover:text-white transition-colors"
+                    >
+                      {post.Movie_Name}
+                    </button>
+                  </td>
                   <td className="py-4 px-6 border-b border-purple-600 text-white font-medium">{post.Release_Date}</td>
                 </tr>
               ))}
