@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import FavoriteButton from '../../components/FavoriteButton';
 
 export default function MovieProfile() {
   const params = useParams();
@@ -91,6 +92,7 @@ export default function MovieProfile() {
           </div>
           <div className="flex space-x-4">
             <a href="/" className="text-gray-900 hover:text-blue-700 dark:text-white">Home</a>
+            <a href="/favorites" className="text-gray-900 hover:text-blue-700 dark:text-white">Favorites</a>
             <a href="/profile" className="text-gray-900 hover:text-blue-700 dark:text-white">Profile</a>
             <button
               onClick={() => {
@@ -109,9 +111,16 @@ export default function MovieProfile() {
 
         {/* Movie Name Header */}
         <div className="bg-purple-800/90 dark:bg-purple-900/90 backdrop-blur-sm rounded-lg shadow-lg p-6 mb-6">
-          <h1 className="text-4xl font-bold text-white">
-            {movie?.Movie_Name || decodeURIComponent(params.name)}
-          </h1>
+          <div className="flex items-center justify-between">
+            <h1 className="text-4xl font-bold text-white">
+              {movie?.Movie_Name || decodeURIComponent(params.name)}
+            </h1>
+            <FavoriteButton 
+              type="movie" 
+              itemId={params.name}
+              itemName={movie?.Movie_Name || decodeURIComponent(params.name)}
+            />
+          </div>
         </div>
 
         {movie && (

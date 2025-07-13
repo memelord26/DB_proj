@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import FavoriteButton from '../../components/FavoriteButton';
 
 export default function ActorProfile() {
   const params = useParams();
@@ -89,6 +90,7 @@ export default function ActorProfile() {
           </div>
           <div className="flex space-x-4">
             <a href="/" className="text-gray-900 hover:text-blue-700 dark:text-white">Home</a>
+            <a href="/favorites" className="text-gray-900 hover:text-blue-700 dark:text-white">Favorites</a>
             <a href="/profile" className="text-gray-900 hover:text-blue-700 dark:text-white">Profile</a>
             <button
               onClick={() => {
@@ -107,9 +109,16 @@ export default function ActorProfile() {
 
         {/* Actor Name Header */}
         <div className="bg-purple-800/90 dark:bg-purple-900/90 backdrop-blur-sm rounded-lg shadow-lg p-6 mb-6">
-          <h1 className="text-4xl font-bold text-white">
-            {actorData?.actor?.Name || params.name}
-          </h1>
+          <div className="flex items-center justify-between">
+            <h1 className="text-4xl font-bold text-white">
+              {actorData?.actor?.Name || params.name}
+            </h1>
+            <FavoriteButton 
+              type="actor" 
+              itemId={params.name}
+              itemName={actorData?.actor?.Name || params.name}
+            />
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
