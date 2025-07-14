@@ -14,6 +14,7 @@ export async function DELETE(request) {
     const client = await clientPromise
     const db = client.db('starsearch')
     const accounts = db.collection('accounts')
+    const favorites = db.collection('favorites')
 
     // Find user by ID
     const user = await accounts.findOne({ _id: new ObjectId(userId) })
@@ -28,13 +29,21 @@ export async function DELETE(request) {
       return NextResponse.json({ error: 'Password is incorrect' }, { status: 401 })
     }
 
+    // Delete user's favorites first
+    const favoritesResult = await favorites.deleteMany({ userId: new ObjectId(userId) })
+    
+    // Delete user account
     const result = await accounts.deleteOne({ _id: new ObjectId(userId) })
 
     if (result.deletedCount === 0) {
       return NextResponse.json({ error: 'Failed to delete account' }, { status: 500 })
     }
 
-    return NextResponse.json({ success: true, message: 'Account deleted successfully' })
+    return NextResponse.json({ 
+      success: true, 
+      message: 'Account deleted successfully',
+      deletedFavorites: favoritesResult.deletedCount 
+    })
 
   } catch (error) {
     console.error('General delete account error:', error)

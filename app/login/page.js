@@ -63,7 +63,7 @@ const AuthForm = () => {
 
       if (res.ok) {
         alert('Registration successful! You can now log in.');
-        toggleView(true); // Switch to login view
+        toggleView('login'); // Switch to login view
       } else {
         alert(data.error || 'Registration failed.');
       }
