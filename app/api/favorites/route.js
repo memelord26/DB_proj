@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
+import { ObjectId } from "mongodb";
 
 // GET - Fetch user's favorites
 export async function GET(request) {
@@ -13,9 +14,16 @@ export async function GET(request) {
 
     const client = await clientPromise;
     const db = client.db('starsearch');
+    const accounts = db.collection('accounts');
     const favorites = db.collection('favorites');
 
-    const userFavorites = await favorites.find({ username }).toArray();
+    // Validate user exists
+    const user = await accounts.findOne({ username });
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
+
+    const userFavorites = await favorites.find({ userId: user._id }).toArray();
     
     return NextResponse.json({ favorites: userFavorites });
   } catch (error) {
@@ -35,11 +43,18 @@ export async function POST(request) {
 
     const client = await clientPromise;
     const db = client.db('starsearch');
+    const accounts = db.collection('accounts');
     const favorites = db.collection('favorites');
+
+    // Validate user exists
+    const user = await accounts.findOne({ username });
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
 
     // Check if already favorited
     const existingFavorite = await favorites.findOne({
-      username,
+      userId: user._id,
       type,
       itemId
     });
@@ -50,7 +65,7 @@ export async function POST(request) {
 
     // Add to favorites
     const result = await favorites.insertOne({
-      username,
+      userId: user._id,
       type,
       itemId,
       itemName,
@@ -82,11 +97,18 @@ export async function DELETE(request) {
 
     const client = await clientPromise;
     const db = client.db('starsearch');
+    const accounts = db.collection('accounts');
     const favorites = db.collection('favorites');
+
+    // Validate user exists
+    const user = await accounts.findOne({ username });
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
 
     // Remove all favorites of this type and itemId for this user
     const result = await favorites.deleteMany({
-      username,
+      userId: user._id,
       type,
       itemId
     });
