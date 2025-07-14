@@ -54,8 +54,7 @@ export async function POST(request) {
       type,
       itemId,
       itemName,
-      createdAt: new Date(),
-      updatedAt: new Date()
+      createdAt: new Date()
     });
 
     return NextResponse.json({ 
